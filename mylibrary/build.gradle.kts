@@ -1,6 +1,8 @@
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -31,6 +33,50 @@ android {
         jvmTarget = "11"
     }
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                from(components["release"])
+                groupId = "com.example.mylibrary"
+                artifactId = "mylibrary"
+                version = "1.0.0"
+            }
+        }
+
+        repositories {
+            maven {
+                url = uri("$rootDir/local-maven-repo") // 💡 Local folder to act like a Maven repo
+            }
+        }
+    }
+}
+
+//publishing {
+//    publications {
+//        create<MavenPublication>("release") {
+//            afterEvaluate {
+//                from(components["release"])
+//            }
+//
+//            groupId = "com.github.nitinnegi267"
+//            artifactId = "mylibrary"
+//            version = "1.0.1"
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/nitinnegi267/mylibrary1")
+//            credentials {
+//                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+//                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+//            }
+//        }
+//    }
+//}
 
 dependencies {
 
